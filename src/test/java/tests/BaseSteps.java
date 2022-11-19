@@ -1,38 +1,18 @@
 package tests;
-import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.Description;
-import io.qameta.allure.selenide.AllureSelenide;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.openqa.selenium.By;
+import io.qameta.allure.Step;
+
 import java.time.Duration;
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.switchTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 public class BaseSteps {
-    @BeforeAll
-    static void beforeConfig() {
-        SelenideLogger.addListener("listenerAllure",new AllureSelenide().screenshots(true).savePageSource(false));
-        Configuration.timeout = 3000; // Умное ожидание появление элемента на странице
-        Configuration.browserSize = "1920x1080";
-    }
-    @BeforeEach
-    void before() {
-        Selenide.open(Locators.baseUrl);
-        Locators.logoImg.shouldBe(visible);
-        login();
-    }
-    @AfterEach
-    void after() {
-        closeWebDriver();
-    }
-    @Description("Авторизация в интернет банке БСБП")
+    @Step("Log-е")
     static void login() {
-        $(By.xpath("//input[@name='username']")).shouldBe(visible).val("demo");
+        Locators.input.shouldBe(visible).val("demo");
         Locators.passwordInput.shouldBe(visible).val("demo");
         Locators.logInButton.shouldBe(visible).click();
         Locators.logoImg.shouldBe(visible);
@@ -42,5 +22,48 @@ public class BaseSteps {
         Locators.appName.shouldBe(visible, Duration.ofSeconds(11));
         assertThat("Не соответствует текст", Locators.appName.getText(), containsString("Интернет-банк"));
     }
+    @Step
+    static void login2() {
+        Locators.input.shouldBe(visible).val("demo");
+        Locators.logInButton.shouldBe(visible).click();
+        Locators.logoImg.shouldBe(visible);
+        Locators.smsInput.shouldBe(visible).val("0000");
+        Locators.codeButton.shouldBe(visible).click();
+        Locators.logoIn.shouldBe(visible);
+        Locators.appName.shouldBe(visible, Duration.ofSeconds(11));
+        assertThat("Не соответствует текст", Locators.appName.getText(), containsString("Интернет-банк"));
+    }
+    @Step
+    @Description("Выбор Аватарки")
+    static void selectAva() {
+        Locators.clickAvatar.shouldBe(visible).click();
+        switchTo().frame(Locators.iframe);
+        Locators.selectImg.shouldBe(visible).click();
+        Locators.saveButton.shouldHave(text("Сохранить")); //Матчер, если не выполняется, то тест падает
+        Locators.saveButton.click();
+    }
+    @Step
+    static void blockinCard()
+    {
+        Locators.selectCard.shouldBe(visible).click();
+        Locators.checkCardOn.shouldHave(text("Действует"));
+        Locators.panelBlockCard.shouldBe(visible).click();
+        Locators.blockCard.shouldBe(visible).click();
+        switchTo().frame($x("//iframe[@id='confirmation-frame']"));
+        Locators.confirmCard.shouldBe(visible).click();
+    }
+    @Step
+        static void unBlockinCard() {
+        switchTo().frame($x("//iframe"));
+        Locators.confirmCard.shouldBe(visible).click();
+    }
+    @Step
+    static void switchPanelCard()
+    {
+        Locators.selectCard.shouldBe(visible).click();
+        Locators.checkCardOff.shouldBe(visible).shouldHave(text("Заблокирована"));
+        Locators.panelUnblockCard.shouldBe(visible).click();
+    }
+
 
 }

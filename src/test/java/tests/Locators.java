@@ -4,6 +4,8 @@ import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Selenide.$x;
     public class Locators {
+        public final static SelenideElement iframe = $x("//div[@id='contentbar']/iframe");
+        public final static SelenideElement input = $x( "//input[@name='username']");
         public final static SelenideElement logoImg = $x("//img[@id='logo']");
         public static final SelenideElement logInButton = $x("//button[@id='login-button']");
         public final static SelenideElement passwordInput = $x("//input[@name='password']");
@@ -22,6 +24,7 @@ import static com.codeborne.selenide.Selenide.$x;
         public final static SelenideElement panelUnblockCard = $x("//span[contains(text(), 'Разблокировать')]");
         public final static SelenideElement checkCardOn = $x("//div[contains(text(), 'Действует')]");
         public final static SelenideElement checkCardOff = $x("//div[contains(text(), 'Заблокирована')]");
+        public final static SelenideElement switchPanelCard = $x("Locators.selectCard.shouldBe(visible).click();");
     }
 
 

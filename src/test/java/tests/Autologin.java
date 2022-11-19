@@ -1,37 +1,51 @@
 package tests;
-import com.codeborne.selenide.SelenideElement;
-import io.qameta.allure.Step;
+import com.codeborne.selenide.Selenide;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selenide.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-public class Autologin extends BaseSteps{
-    @Step("Изменить аватар")
-    @Test
-    void selectAva() {
-        Locators.clickAvatar.shouldBe(visible).click();
-        switchTo().frame($x("(//div[@id='contentbar']/iframe)"));
-        Locators.selectImg.shouldBe(visible).click();
-        Locators.saveButton.shouldHave(text("Сохранить")); //Матчер, если не выполняется, то тест падает
-        Locators.saveButton.click();
-    }
-    @Step("Блокировка-Разблокировка")
-    @Test
-    void blockinCard() {
-        Locators.selectCard.shouldBe(visible).click();
-        Locators.checkCardOn.shouldHave(text("Действует"));
-        Locators.panelBlockCard.shouldBe(visible).click();
-        Locators.blockCard.shouldBe(visible).click();
-        switchTo().frame($x("//iframe[@id='confirmation-frame']"));
-        Locators.confirmCard.shouldBe(visible).click();
+import static com.codeborne.selenide.Condition.visible;
 
-        Locators.checkCardOff.shouldBe(visible);
-        Locators.checkCardOff.shouldHave(text("Заблокирована"));
-        Locators.panelUnblockCard.shouldBe(visible).click();
-        switchTo().frame($x("//iframe"));
-        Locators.confirmCard.shouldBe(visible).click();
+public class Autologin extends BaseTest {
+// сделать приоритет выполнения тестов
+    @Override
+    @BeforeEach
+    void before() {
+        super.before();
+        Selenide.open(Locators.baseUrl);
+        Locators.logoImg.shouldBe(visible);
+        BaseSteps.login();
     }
+
+    @Test
+    void selectAva1()
+    {
+        BaseSteps.selectAva();
+    }
+  //  @Test
+    void loginsWithoutPassword()
+    {
+        BaseSteps.login();
+    }
+  //  @Test
+     void loginWithoutPassword()
+    {
+        BaseSteps.login2();
+    }
+  //  @Test
+    void blockinCard1()
+    {
+      //  BaseSteps.login();
+        BaseSteps.blockinCard();
+
+    }
+ //   @Test
+    void unBlockinCard1()
+    {
+      //  BaseSteps.login();
+        BaseSteps.switchPanelCard();
+        BaseSteps.unBlockinCard();
+      //  $(byTagAndText("h1", "Hello world")).shouldHave(Condition.attribute("Hello World"));
+    }
+
     /*void appCheckAlert() {
         final SelenideElement alert = $x("//div[@class='alert alert-error']");
         assertThat("Не соответствует текст", alert.getText(), containsString("Демо-пользователь не может менять настройки."));
